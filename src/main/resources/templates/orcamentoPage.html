@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerenciador de Orçamentos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background-color: #f4f4f4; color: #333; line-height: 1.6; }
+        h1, h2 { font-weight: 600; color: #333; margin-bottom: 20px; text-align: center; }
+        .container { width: 90%; max-width: 1200px; margin: 20px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        form { margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 5px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+        button { background-color: #007BFF; color: #fff; padding: 10px 20px; font-size: 1rem; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease; }
+        button:hover { background-color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        .btn-pesquisar-usuario { background-color: #17a2b8; margin-top: -15px; }
+        .btn-excluir { background-color: #dc3545; }
+        .usuario-search-results { border: 1px solid #ddd; max-height: 150px; overflow-y: auto; }
+        .usuario-result-item { padding: 8px; cursor: pointer; }
+        .usuario-result-item:hover { background-color: #f0f0f0; }
+        .usuario-selecionado { color: #28a745; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gerenciador de Orçamentos</h1>
+
+    <form id="orcamentoForm">
+        <h2>Cadastrar Novo Orçamento</h2>
+        <input type="hidden" id="orcamentoId"> <div>
+        <label for="usuarioSearchTerm">Pesquisar Usuário por Nome:</label>
+        <input type="text" id="usuarioSearchTerm" placeholder="Digite o nome do usuário...">
+        <button type="button" id="searchUsuarioButton" class="btn-pesquisar-usuario">Pesquisar</button>
+        <div id="usuarioSearchResults" class="usuario-search-results"></div>
+        <div id="selectedUsuario" class="usuario-selecionado"></div>
+        <input type="hidden" id="usuarioId" required> </div>
+
+        <hr style="margin: 20px 0;">
+
+        <div>
+            <label for="icmsEstados">Estado (ICMS):</label>
+            <select id="icmsEstados" required>
+                <option value="ICMS_MG">Minas Gerais (MG)</option>
+                <option value="ICMS_SP">São Paulo (SP)</option>
+                <option value="ICMS_RJ">Rio de Janeiro (RJ)</option>
+            </select>
+        </div>
+        <div>
+            <label for="valorOrcamento">Valor do Orçamento (R$):</label>
+            <input type="number" id="valorOrcamento" step="0.01" placeholder="Ex: 1500.50" required>
+        </div>
+
+        <button type="submit">Salvar Orçamento</button>
+        <button type="button" id="btnLimpar">Limpar</button>
+    </form>
+
+    <h2>Orçamentos Cadastrados</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Valor Orçamento</th>
+            <th>Valor ICMS</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody id="orcamentoTableBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const API_ORCAMENTOS_URL = '/orcamentos/api';
+    const API_USUARIOS_URL = '/api/usuarios'; // URL da sua API de usuários
+
+    const orcamentoTableBody = document.getElementById('orcamentoTableBody');
+    const orcamentoForm = document.getElementById('orcamentoForm');
+    const searchUsuarioButton = document.getElementById('searchUsuarioButton');
+    const usuarioSearchResults = document.getElementById('usuarioSearchResults');
+    const btnLimpar = document.getElementById('btnLimpar');
+
+    // Função para buscar e renderizar a tabela de orçamentos
+    const fetchAndRenderOrcamentos = async () => {
+        try {
+            const response = await fetch(API_ORCAMENTOS_URL);
+            const orcamentos = await response.json();
+            orcamentoTableBody.innerHTML = ''; // Limpa a tabela
+            orcamentos.forEach(orc => {
+                const row = `
+                    <tr>
+                        <td>${orc.id}</td>
+                        <td>${orc.usuario ? orc.usuario.nomeUsuario : 'N/A'}</td>
+                        <td>R$ ${orc.valorOrcamento.toFixed(2)}</td>
+                        <td>R$ ${orc.valorICMS.toFixed(2)}</td>
+                        <td>
+                            <button class="btn-excluir" data-id="${orc.id}">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+                orcamentoTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar orçamentos:', error);
+        }
+    };
+
+    // Função para limpar o formulário
+    const clearForm = () => {
+        orcamentoForm.reset();
+        document.getElementById('orcamentoId').value = '';
+        document.getElementById('usuarioId').value = '';
+        document.getElementById('selectedUsuario').textContent = '';
+        usuarioSearchResults.innerHTML = '';
+    };
+
+    // --- LÓGICA DE PESQUISA DE USUÁRIO ---
+    searchUsuarioButton.addEventListener('click', async () => {
+        const searchTerm = document.getElementById('usuarioSearchTerm').value;
+        if (searchTerm.length < 2) {
+            alert('Digite pelo menos 2 caracteres para pesquisar.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_USUARIOS_URL}/pesquisa?nome=${encodeURIComponent(searchTerm)}`);
+            const usuarios = await response.json();
+            usuarioSearchResults.innerHTML = '';
+            if (usuarios.length > 0) {
+                usuarios.forEach(user => {
+                    const item = `<div class="usuario-result-item" data-id="${user.id}" data-name="${user.nomeUsuario}">${user.nomeUsuario} (CPF: ${user.cpf})</div>`;
+                    usuarioSearchResults.insertAdjacentHTML('beforeend', item);
+                });
+            } else {
+                usuarioSearchResults.innerHTML = '<div>Nenhum usuário encontrado.</div>';
+            }
+        } catch (error) {
+            console.error('Erro ao pesquisar usuário:', error);
+        }
+    });
+
+    // Evento para quando um usuário é CLICADO na lista de resultados
+    usuarioSearchResults.addEventListener('click', (e) => {
+        if (e.target.classList.contains('usuario-result-item')) {
+            const userId = e.target.dataset.id;
+            const userName = e.target.dataset.name;
+
+            document.getElementById('usuarioId').value = userId; // GUARDA O ID
+            document.getElementById('selectedUsuario').textContent = `Usuário Selecionado: ${userName}`;
+
+            usuarioSearchResults.innerHTML = ''; // Limpa os resultados
+        }
+    });
+
+    // --- LÓGICA DE SALVAR ORÇAMENTO ---
+    orcamentoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const usuarioId = document.getElementById('usuarioId').value;
+        if (!usuarioId) {
+            alert('Por favor, pesquise e selecione um usuário!');
+            return;
+        }
+
+        const orcamentoData = {
+            icmsEstados: document.getElementById('icmsEstados').value,
+            valorOrcamento: parseFloat(document.getElementById('valorOrcamento').value),
+            usuario: {
+                id: parseInt(usuarioId) // Estrutura esperada pelo backend
+            }
+        };
+
+        try {
+            const response = await fetch(API_ORCAMENTOS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orcamentoData),
+            });
+
+            if (!response.ok) throw new Error('Falha ao salvar o orçamento.');
+
+            clearForm();
+            fetchAndRenderOrcamentos();
+            alert('Orçamento cadastrado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao salvar orçamento:', error);
+            alert('Ocorreu um erro: ' + error.message);
+        }
+    });
+
+    // Lógica para deletar orçamento
+    orcamentoTableBody.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('btn-excluir')) {
+            const orcamentoId = e.target.dataset.id;
+            if (confirm(`Tem certeza que deseja excluir o orçamento ID ${orcamentoId}?`)) {
+                try {
+                    await fetch(`${API_ORCAMENTOS_URL}/${orcamentoId}`, { method: 'DELETE' });
+                    fetchAndRenderOrcamentos();
+                } catch (error) {
+                    console.error('Erro ao excluir:', error);
+                }
+            }
+        }
+    });
+
+    // Limpar formulário e carregar dados iniciais
+    btnLimpar.addEventListener('click', clearForm);
+    document.addEventListener('DOMContentLoaded', fetchAndRenderOrcamentos);
+
+</script>
+
+</body>
+</html>
