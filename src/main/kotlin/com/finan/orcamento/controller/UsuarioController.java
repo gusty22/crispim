@@ -16,7 +16,7 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     // 1. Endpoint para carregar a PÁGINA HTML principal
-    @GetMapping("/")
+    @GetMapping("/usuarios")
     public String carregarPaginaPrincipal() {
         // Retorna o nome do seu arquivo HTML. Renomeie seu arquivo para "gerenciador.html"
         // ou mude o nome aqui para "usuarioPage".

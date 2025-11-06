@@ -2,9 +2,6 @@ package com.finan.orcamento.model;
 
 import com.finan.orcamento.model.enums.IcmsEstados;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -32,20 +29,30 @@ public class OrcamentoModel implements Serializable {
     @JoinColumn(name="usuario_id", referencedColumnName = "id")
     private UsuarioModel usuario;
 
+    // Relacionamento com Cliente
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private ClienteModel cliente;
+
     public void calcularIcms() {
-        this.valorICMS = this.icmsEstados.getStrategy().calcular(this.valorOrcamento);
+        if (this.icmsEstados != null && this.valorOrcamento != null) {
+            this.valorICMS = this.icmsEstados.getStrategy().calcular(this.valorOrcamento);
+        }
     }
 
     public OrcamentoModel(){}
 
-    public OrcamentoModel(Long id, IcmsEstados icmsEstados, @NotNull BigDecimal valorOrcamento, BigDecimal valorICMS, UsuarioModel usuario) {
+    // Construtor completo
+    public OrcamentoModel(Long id, IcmsEstados icmsEstados, @NotNull BigDecimal valorOrcamento, BigDecimal valorICMS, UsuarioModel usuario, ClienteModel cliente) {
         this.id = id;
         this.icmsEstados = icmsEstados;
         this.valorOrcamento = valorOrcamento;
         this.valorICMS = valorICMS;
         this.usuario = usuario;
+        this.cliente = cliente;
     }
 
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -87,8 +94,17 @@ public class OrcamentoModel implements Serializable {
         this.usuario = usuario;
     }
 
+    public ClienteModel getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(ClienteModel cliente) {
+        this.cliente = cliente;
+    }
+
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrcamentoModel that = (OrcamentoModel) o;
         return Objects.equals(id, that.id);
