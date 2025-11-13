@@ -3,62 +3,74 @@ package com.finan.orcamento.controller;
 import com.finan.orcamento.model.OrcamentoModel;
 import com.finan.orcamento.service.OrcamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller; // MUDE PARA @Controller
+import org.springframework.http.ResponseEntity; // Removido HttpStatus
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller // MUDE AQUI
+@Controller
 @RequestMapping("/orcamentos")
 public class OrcamentoController {
     @Autowired
     private OrcamentoService orcamentoService;
 
-    // Endpoint para servir a PÁGINA HTML
+    // 1. Endpoint para servir a PÁGINA HTML
     @GetMapping
     public String paginaOrcamentos() {
-        return "orcamentoPage"; // Nome do arquivo HTML que vamos criar
+        return "orcamentoPage";
     }
 
-    // --- A PARTIR DAQUI, SÃO AS APIs (retornam JSON) ---
+    // --- API REST ---
 
-    // API para LISTAR todos os orçamentos
+    // 2. API para LISTAR
     @GetMapping("/api")
-    @ResponseBody // Adicione @ResponseBody para retornar JSON
+    @ResponseBody
     public ResponseEntity<List<OrcamentoModel>> buscaTodosOrcamentos(){
         return ResponseEntity.ok(orcamentoService.buscarCadastro());
     }
 
-    // API para buscar por ID
+    // 3. API para OBTER POR ID
     @GetMapping("/api/{id}")
     @ResponseBody
     public ResponseEntity<OrcamentoModel> buscaPorId(@PathVariable Long id){
-        return ResponseEntity.ok().body(orcamentoService.buscaId(id));
+        try {
+            OrcamentoModel orcamento = orcamentoService.buscaId(id);
+            return ResponseEntity.ok(orcamento);
+        } catch (RuntimeException e) {
+            // Retorna 404 se o serviço lançar a exceção
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // API para CADASTRAR um novo orçamento
+    // 4. API para SALVAR (Criar/Atualizar) - UNIFICADO
     @PostMapping("/api")
     @ResponseBody
-    public ResponseEntity<OrcamentoModel> cadastraOrcamento(@RequestBody OrcamentoModel orcamentoModel){
-        OrcamentoModel novoOrcamento = orcamentoService.cadastrarOrcamento(orcamentoModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoOrcamento);
+    public ResponseEntity<OrcamentoModel> salvarOuAtualizarOrcamento(@RequestBody OrcamentoModel orcamentoModel){
+        // Esta única função agora trata tanto a CRIAÇÃO (sem ID no body)
+        // quanto a ATUALIZAÇÃO (com ID no body),
+        // assim como o seu frontend espera.
+        try {
+            OrcamentoModel orcamentoSalvo = orcamentoService.salvarOuAtualizar(orcamentoModel);
+            return ResponseEntity.ok(orcamentoSalvo);
+        } catch (RuntimeException e) {
+            // Retorna 400 Bad Request se a validação falhar (ex: sem usuário E sem cliente)
+            return ResponseEntity.badRequest().body(null); // ideal seria um DTO de erro
+        }
     }
 
-    // API para ATUALIZAR
-    @PutMapping("/api/{id}") // Use PUT para atualizações completas
-    @ResponseBody
-    public ResponseEntity<OrcamentoModel> atualizaOrcamento(@RequestBody OrcamentoModel orcamentoModel, @PathVariable Long id){
-        OrcamentoModel orcamentoAtualizado = orcamentoService.atualizaCadastro(orcamentoModel, id);
-        return ResponseEntity.ok().body(orcamentoAtualizado);
-    }
-
-    // API para DELETAR
+    // 5. API para DELETAR
     @DeleteMapping("/api/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteOrcamento(@PathVariable Long id){
-        orcamentoService.deletaOrcamento(id);
-        return ResponseEntity.noContent().build();
+        try {
+            orcamentoService.deletaOrcamento(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            // Retorna 404 se tentar deletar algo que não existe
+            return ResponseEntity.notFound().build();
+        }
     }
+
+    // Endpoint PUT removido, pois foi unificado no POST
 }

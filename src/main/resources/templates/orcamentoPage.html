@@ -23,11 +23,7 @@
         }
 
         /* 2. Reset e Estilos Globais */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--cor-fundo);
@@ -45,39 +41,14 @@
             align-items: center;
             box-shadow: var(--sombra-card);
         }
-        .navbar .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--cor-primaria);
-            text-decoration: none;
-        }
-        .navbar .nav-links a {
-            color: var(--cor-texto-secundario);
-            text-decoration: none;
-            margin-left: 2rem;
-            font-weight: 500;
-            transition: color 0.2s ease-in-out;
-        }
-        .navbar .nav-links a:hover {
-            color: var(--cor-texto-primario);
-        }
-        .navbar .nav-links a.active {
-            color: var(--cor-primaria);
-            font-weight: 600;
-        }
+        .navbar .logo { font-weight: 700; font-size: 1.5rem; color: var(--cor-primaria); text-decoration: none; }
+        .navbar .nav-links a { color: var(--cor-texto-secundario); text-decoration: none; margin-left: 2rem; font-weight: 500; transition: color 0.2s ease-in-out; }
+        .navbar .nav-links a:hover { color: var(--cor-texto-primario); }
+        .navbar .nav-links a.active { color: var(--cor-primaria); font-weight: 600; }
 
         /* 4. Layout Principal e Cards */
-        .container {
-            max-width: 1300px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-            align-items: flex-start;
-        }
+        .container { max-width: 1300px; margin: 2.5rem auto; padding: 0 2rem; }
+        .main-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: flex-start; }
         .card {
             background-color: var(--cor-superficie);
             border: 1px solid var(--cor-borda);
@@ -86,7 +57,7 @@
             box-shadow: var(--sombra-card);
         }
         .card-title {
-            font-size: 1.5rem; /* Menor */
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
             font-weight: 600;
             color: var(--cor-texto-primario);
@@ -95,18 +66,12 @@
         }
 
         /* 5. Formulários */
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--cor-texto-secundario);
-            font-size: 0.9rem;
-        }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--cor-texto-secundario); font-size: 0.9rem; }
         input, select {
             width: 100%;
             padding: 0.75rem 1rem;
             margin-bottom: 1.5rem;
-            background-color: var(--cor-fundo); /* Fundo sutilmente diferente */
+            background-color: var(--cor-fundo);
             border: 1px solid var(--cor-borda);
             border-radius: 8px;
             color: var(--cor-texto-primario);
@@ -119,82 +84,29 @@
             border-color: var(--cor-primaria);
             box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.2);
         }
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
+        .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
 
         /* 6. Botões */
-        button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.95rem; /* Um pouco menor */
-            border-radius: 8px;
-            cursor: pointer;
-            border: none;
-            transition: filter 0.2s ease-in-out;
-            font-weight: 600; /* Mais forte */
-            font-family: 'Inter', sans-serif;
-        }
-        button svg {
-            width: 16px; /* Menor */
-            height: 16px;
-        }
+        button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; font-size: 0.95rem; border-radius: 8px; cursor: pointer; border: none; transition: filter 0.2s ease-in-out, background-color 0.2s ease, transform 0.2s ease; font-weight: 600; font-family: 'Inter', sans-serif; }
+        button svg { width: 16px; height: 16px; }
         .btn-primary { background-color: var(--cor-primaria); color: #ffffff; }
         .btn-primary:hover { filter: brightness(90%); }
-
-        .btn-secondary {
-            background-color: var(--cor-borda);
-            color: var(--cor-texto-secundario);
-            font-weight: 500;
-        }
-        .btn-secondary:hover { background-color: #dce1e6; } /* Cinza um pouco mais escuro */
-
+        .btn-secondary { background-color: var(--cor-borda); color: var(--cor-texto-secundario); font-weight: 500; }
+        .btn-secondary:hover { background-color: #dce1e6; }
         .btn-danger { background-color: var(--cor-perigo); color: #ffffff; }
         .btn-danger:hover { filter: brightness(90%); }
-
         .btn-info { background-color: var(--cor-info); color: #ffffff; }
         .btn-info:hover { filter: brightness(90%); }
 
         /* 7. Tabela */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: var(--cor-texto-secundario);
-        }
-        th, td {
-            padding: 1rem; /* Espaçamento consistente */
-            text-align: left;
-            border-bottom: 1px solid var(--cor-borda);
-        }
-        thead th {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase; /* Mantém para clareza da coluna */
-            color: var(--cor-texto-secundario);
-            background-color: var(--cor-fundo);
-        }
-        tbody tr {
-            transition: background-color 0.2s ease-in-out;
-        }
-        tbody tr:hover {
-            background-color: #fcfcfd;
-        }
-        tbody td {
-            font-size: 0.95rem;
-            color: var(--cor-texto-primario);
-        }
-        tbody td button { /* Botões na tabela menores */
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
-        }
-        tbody td button svg {
-            width: 14px;
-            height: 14px;
-        }
+        table { width: 100%; border-collapse: collapse; color: var(--cor-texto-secundario); }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--cor-borda); }
+        thead th { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: var(--cor-texto-secundario); background-color: var(--cor-fundo); }
+        tbody tr:hover { background-color: #fcfcfd; }
+        tbody td { font-size: 0.95rem; color: var(--cor-texto-primario); }
+        tbody td button { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        tbody td button svg { width: 14px; height: 14px; }
+        .action-buttons { display: flex; gap: 0.5rem; }
 
         /* 8. Componentes Específicos de Pesquisa */
         .search-results {
@@ -203,52 +115,88 @@
             border-radius: 8px;
             max-height: 160px;
             overflow-y: auto;
-            margin-top: -1rem; /* Puxa para baixo do input */
+            margin-top: -1rem;
             box-shadow: var(--sombra-card);
+            z-index: 10;
+            position: absolute;
+            width: calc(100% - 5rem);
         }
-        .result-item {
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: background-color 0.2s ease;
+        .result-item { padding: 0.75rem 1rem; cursor: pointer; font-size: 0.95rem; transition: background-color 0.2s ease; }
+        .result-item:hover { background-color: #f1f3f5; }
+        .result-item:not(:last-child) { border-bottom: 1px solid var(--cor-borda); }
+        .selected-item { color: var(--cor-primaria); font-weight: 500; min-height: 1.5rem; margin: 0.5rem 0 1rem 0; font-size: 0.9rem; }
+        .search-wrapper { position: relative; }
+
+        /* 9. Estilos do Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(33, 37, 41, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
         }
-        .result-item:hover {
-            background-color: #f1f3f5;
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
         }
-        .result-item:not(:last-child) {
+        .modal-content {
+            background-color: var(--cor-superficie);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--sombra-card);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            z-index: 1001;
+            transform: scale(0.95);
+            transition: transform 0.2s ease-in-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: var(--cor-texto-primario);
             border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 1rem;
         }
-        .selected-item {
-            color: var(--cor-primaria); /* Usa a cor primária */
-            font-weight: 500;
-            min-height: 1.5rem;
-            margin: 0.5rem 0 1rem 0; /* Espaçamento ajustado */
-            font-size: 0.9rem;
+        .modal-close {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--cor-texto-secundario);
+            cursor: pointer;
+            line-height: 1;
+            border: none;
+            background: transparent;
+            padding: 0;
         }
+        .modal-close:hover { color: var(--cor-texto-primario); }
 
-        /* 9. Responsividade */
+        /* 10. Responsividade */
         @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr; /* Coluna única em tablets */
-            }
+            .main-grid { grid-template-columns: 1fr; }
+            .search-results { width: calc(100% - 3rem); }
         }
-
         @media (max-width: 768px) {
-            body {
-                font-size: 14px; /* Reduz a fonte base em mobile */
-            }
-            .navbar {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .container {
-                margin: 1.5rem auto;
-                padding: 0 1rem;
-            }
-            .card {
-                padding: 1.5rem;
-            }
+            body { font-size: 14px; }
+            .navbar { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .container { margin: 1.5rem auto; padding: 0 1rem; }
+            .card { padding: 1.5rem; }
+            .modal-content { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -267,35 +215,44 @@
     <div class="main-grid">
         <aside class="card">
             <h2 class="card-title">Novo Orçamento</h2>
-            <form id="orcamentoForm" onsubmit="return false;">
-                <input type="hidden" id="orcamentoId">
+            <form id="orcamentoForm">
 
-                <label for="usuarioSearchTerm">1. Usuário (Criador)</label>
-                <input type="text" id="usuarioSearchTerm" placeholder="Pesquisar por nome...">
-                <div id="usuarioSearchResults" class="search-results"></div>
+                <label for="tipoAutor">1. Criado por:</label>
+                <select id="tipoAutor" required>
+                    <option value="usuario" selected>Usuário</option>
+                    <option value="cliente">Cliente</option>
+                </select>
+
+                <div class="search-wrapper" id="usuarioSearchWrapper">
+                    <label for="usuarioSearchTerm">Buscar Usuário</label>
+                    <input type="text" id="usuarioSearchTerm" placeholder="Pesquisar por nome..." autocomplete="off">
+                    <div id="usuarioSearchResults" class="search-results"></div>
+                </div>
                 <div id="selectedUsuario" class="selected-item"></div>
-                <input type="hidden" id="usuarioId" required>
+                <input type="hidden" id="usuarioId">
 
-                <label for="clienteSearchTerm">2. Cliente (Para quem é)</label>
-                <input type="text" id="clienteSearchTerm" placeholder="Pesquisar por nome ou CPF...">
-                <div id="clienteSearchResults" class="search-results"></div>
+                <div class="search-wrapper" id="clienteSearchWrapper">
+                    <label for="clienteSearchTerm">Buscar Cliente</label>
+                    <input type="text" id="clienteSearchTerm" placeholder="Pesquisar por nome ou CPF..." autocomplete="off">
+                    <div id="clienteSearchResults" class="search-results"></div>
+                </div>
                 <div id="selectedCliente" class="selected-item"></div>
-                <input type="hidden" id="clienteId" required>
+                <input type="hidden" id="clienteId">
 
-                <label for="icmsEstados">3. Dados Fiscais</label>
+                <label for="icmsEstados">2. Dados Fiscais</label>
                 <select id="icmsEstados" required>
                     <option value="ICMS_MG">Minas Gerais (MG)</option>
                     <option value="ICMS_SP">São Paulo (SP)</option>
                     <option value="ICMS_RJ">Rio de Janeiro (RJ)</option>
                 </select>
 
-                <label for="valorOrcamento">4. Valor</label>
+                <label for="valorOrcamento">3. Valor</label>
                 <input type="number" id="valorOrcamento" step="0.01" placeholder="R$ 0,00" required>
 
                 <div class="form-actions">
                     <button type="submit" id="btnSalvar" class="btn-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,9H5a1,1,0,0,0-1,1V19a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V10A1,1,0,0,0,19,9ZM7,17a1,1,0,1,1,1-1A1,1,0,0,1,7,17ZM17,7H7V4H17Z"/></svg>
-                        Salvar
+                        <span>Salvar</span>
                     </button>
                     <button type="button" id="btnLimpar" class="btn-secondary">Limpar</button>
                 </div>
@@ -309,7 +266,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
-                    <th>Usuário (Criador)</th>
+                    <th>Usuário</th>
                     <th>Valor Orçamento</th>
                     <th>Ações</th>
                 </tr>
@@ -320,33 +277,129 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="editModalOverlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="card-title" style="margin-bottom: 0; border: none; padding: 0;">Editar Orçamento</h2>
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+
+        <form id="editOrcamentoForm" style="margin-top: 1.5rem;">
+            <input type="hidden" id="editOrcamentoId">
+
+            <label for="editTipoAutor">1. Criado por:</label>
+            <select id="editTipoAutor" required>
+                <option value="usuario" selected>Usuário</option>
+                <option value="cliente">Cliente</option>
+            </select>
+
+            <div class="search-wrapper" id="editUsuarioSearchWrapper">
+                <label for="editUsuarioSearchTerm">Buscar Usuário</label>
+                <input type="text" id="editUsuarioSearchTerm" placeholder="Pesquisar por nome..." autocomplete="off">
+                <div id="editUsuarioSearchResults" class="search-results"></div>
+            </div>
+            <div id="editSelectedUsuario" class="selected-item"></div>
+            <input type="hidden" id="editUsuarioId">
+
+            <div class="search-wrapper" id="editClienteSearchWrapper">
+                <label for="editClienteSearchTerm">Buscar Cliente</label>
+                <input type="text" id="editClienteSearchTerm" placeholder="Pesquisar por nome ou CPF..." autocomplete="off">
+                <div id="editClienteSearchResults" class="search-results"></div>
+            </div>
+            <div id="editSelectedCliente" class="selected-item"></div>
+            <input type="hidden" id="editClienteId">
+
+            <label for="editIcmsEstados">2. Dados Fiscais</label>
+            <select id="editIcmsEstados" required>
+                <option value="ICMS_MG">Minas Gerais (MG)</option>
+                <option value="ICMS_SP">São Paulo (SP)</option>
+                <option value="ICMS_RJ">Rio de Janeiro (RJ)</option>
+            </select>
+
+            <label for="editValorOrcamento">3. Valor</label>
+            <input type="number" id="editValorOrcamento" step="0.01" placeholder="R$ 0,00" required>
+
+            <div class="form-actions">
+                <button type="submit" id="salvarEditOrcamento" class="btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,9H5a1,1,0,0,0-1,1V19a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V10A1,1,0,0,0,19,9ZM7,17a1,1,0,1,1,1-1A1,1,0,0,1,7,17ZM17,7H7V4H17Z"/></svg>
+                    <span>Atualizar</span>
+                </button>
+                <button type="button" id="btnCancelarEdit" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <script>
     const API_ORCAMENTOS_URL = '/orcamentos/api';
     const API_USUARIOS_URL = '/api/usuarios';
     const API_CLIENTES_URL = '/api/clientes';
 
-    // NOVO: Formato monetário Brasileiro (R$ 200.000,00)
-    // Isso cria um formatador que já sabe usar R$, ponto de milhar e vírgula de decimal.
     const currencyFormatter = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
     });
 
-    // Elementos do formulário
+    // --- Elementos (Sidebar) ---
     const orcamentoTableBody = document.getElementById('orcamentoTableBody');
     const orcamentoForm = document.getElementById('orcamentoForm');
-    const btnSalvar = document.getElementById('btnSalvar');
     const btnLimpar = document.getElementById('btnLimpar');
-
-    // Elementos de pesquisa de Usuário
+    // NOVOS Elementos (Sidebar)
+    const tipoAutorSelect = document.getElementById('tipoAutor');
+    const usuarioSearchWrapper = document.getElementById('usuarioSearchWrapper');
+    const clienteSearchWrapper = document.getElementById('clienteSearchWrapper');
+    // Elementos de busca (Sidebar)
     const usuarioSearchTermInput = document.getElementById('usuarioSearchTerm');
     const usuarioSearchResults = document.getElementById('usuarioSearchResults');
-
-    // Elementos de pesquisa de Cliente
     const clienteSearchTermInput = document.getElementById('clienteSearchTerm');
     const clienteSearchResults = document.getElementById('clienteSearchResults');
 
-    // Carrega a tabela inicial
+    // --- Elementos (Modal) ---
+    const editModalOverlay = document.getElementById('editModalOverlay');
+    const editOrcamentoForm = document.getElementById('editOrcamentoForm');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const btnCancelarEdit = document.getElementById('btnCancelarEdit');
+    // NOVOS Elementos (Modal)
+    const editTipoAutorSelect = document.getElementById('editTipoAutor');
+    const editUsuarioSearchWrapper = document.getElementById('editUsuarioSearchWrapper');
+    const editClienteSearchWrapper = document.getElementById('editClienteSearchWrapper');
+    // Elementos de busca (Modal)
+    const editUsuarioSearchTermInput = document.getElementById('editUsuarioSearchTerm');
+    const editUsuarioSearchResults = document.getElementById('editUsuarioSearchResults');
+    const editSelectedUsuario = document.getElementById('editSelectedUsuario');
+    const editClienteSearchTermInput = document.getElementById('editClienteSearchTerm');
+    const editClienteSearchResults = document.getElementById('editClienteSearchResults');
+    const editSelectedCliente = document.getElementById('editSelectedCliente');
+
+
+    // --- NOVO: Função de Toggle (Exibir/Ocultar campos) ---
+    /**
+     * Alterna a visibilidade dos campos de busca de usuário/cliente com base no select.
+     * @param {HTMLSelectElement} selectElement - O <select> (tipoAutor ou editTipoAutor)
+     * @param {HTMLElement} wrapperUsuario - O <div> que contém a busca de usuário
+     * @param {HTMLElement} wrapperCliente - O <div> que contém a busca de cliente
+     * @param {string} inputIdUsuario - O ID do <input hidden> de usuário (ex: 'usuarioId')
+     * @param {string} inputIdCliente - O ID do <input hidden> de cliente (ex: 'clienteId')
+     */
+    const toggleAutorFields = (selectElement, wrapperUsuario, wrapperCliente, inputIdUsuario, inputIdCliente) => {
+        const selectedValue = selectElement.value;
+        const inputUsuario = document.getElementById(inputIdUsuario);
+        const inputCliente = document.getElementById(inputIdCliente);
+
+        if (selectedValue === 'usuario') {
+            wrapperUsuario.style.display = 'block';
+            wrapperCliente.style.display = 'none';
+            if (inputCliente) inputCliente.value = ''; // Limpa o ID oculto do cliente
+        } else { // 'cliente'
+            wrapperUsuario.style.display = 'none';
+            wrapperCliente.style.display = 'block';
+            if (inputUsuario) inputUsuario.value = ''; // Limpa o ID oculto do usuário
+        }
+    };
+
+
+    // --- READ (ALL) ---
     const fetchAndRenderOrcamentos = async () => {
         try {
             const response = await fetch(API_ORCAMENTOS_URL);
@@ -358,13 +411,16 @@
                         <td>${orc.id}</td>
                         <td>${orc.cliente ? orc.cliente.nome : 'N/A'}</td>
                         <td>${orc.usuario ? orc.usuario.nomeUsuario : 'N/A'}</td>
-
                         <td>${currencyFormatter.format(orc.valorOrcamento)}</td>
-
                         <td>
-                            <button class="btn-danger" onclick="deleteOrcamento(${orc.id})">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16,9V4H8V9H2V11H4V21a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V11h2V9ZM10,18H8V13h2Zm4,0H12V13h2Zm4-7H6V6H18Z"/></svg>
-                            </button>
+                            <div class="action-buttons">
+                                <button class="btn-info" data-action="edit" data-id="${orc.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z"/></svg>
+                                </button>
+                                <button class="btn-danger" data-action="delete" data-id="${orc.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9,3V4H4V6H5V19C5,20.1 5.9,21 7,21H17C18.1,21 19,20.1 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"/></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -375,20 +431,71 @@
         }
     };
 
-    // Limpa o formulário completo
+    // ATUALIZADO: Limpa o formulário da SIDEBAR e reseta o toggle
     const clearForm = () => {
         orcamentoForm.reset();
-        document.getElementById('orcamentoId').value = '';
+
+        // Reseta o select e o toggle
+        tipoAutorSelect.value = 'usuario';
+        toggleAutorFields(tipoAutorSelect, usuarioSearchWrapper, clienteSearchWrapper, 'usuarioId', 'clienteId');
+
+        // Limpa seleções
         document.getElementById('usuarioId').value = '';
         document.getElementById('selectedUsuario').textContent = '';
         usuarioSearchResults.innerHTML = '';
-        // Limpar campos de cliente
         document.getElementById('clienteId').value = '';
         document.getElementById('selectedCliente').textContent = '';
         clienteSearchResults.innerHTML = '';
     };
 
-    // --- Pesquisa de USUÁRIO (Existente) ---
+    // --- Funções do Modal (ATUALIZADAS) ---
+    const openEditModal = (orcamento) => {
+        document.getElementById('editOrcamentoId').value = orcamento.id;
+        document.getElementById('editIcmsEstados').value = orcamento.icmsEstados;
+        document.getElementById('editValorOrcamento').value = orcamento.valorOrcamento.toFixed(2);
+
+        // ATUALIZADO: Define o select e o toggle ANTES de preencher
+        if (orcamento.usuario) {
+            editTipoAutorSelect.value = 'usuario';
+            toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+
+            document.getElementById('editUsuarioId').value = orcamento.usuario.id;
+            editSelectedUsuario.textContent = `Usuário Selecionado: ${orcamento.usuario.nomeUsuario}`;
+            editUsuarioSearchTermInput.value = orcamento.usuario.nomeUsuario;
+        } else if (orcamento.cliente) {
+            editTipoAutorSelect.value = 'cliente';
+            toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+
+            document.getElementById('editClienteId').value = orcamento.cliente.id;
+            editSelectedCliente.textContent = `Cliente Selecionado: ${orcamento.cliente.nome}`;
+            editClienteSearchTermInput.value = orcamento.cliente.nome;
+        } else {
+             // Fallback: se não tiver nenhum, default para usuário
+             editTipoAutorSelect.value = 'usuario';
+             toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+        }
+
+        editModalOverlay.classList.add('active');
+    };
+
+    const closeEditModal = () => {
+        editModalOverlay.classList.remove('active');
+        editOrcamentoForm.reset();
+
+        // Reseta o toggle do modal
+        editTipoAutorSelect.value = 'usuario';
+        toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+
+        // Limpa buscas do modal
+        editUsuarioSearchResults.innerHTML = '';
+        editClienteSearchResults.innerHTML = '';
+        editSelectedUsuario.textContent = '';
+        editSelectedCliente.textContent = '';
+    };
+    // --- FIM: Funções do Modal ---
+
+
+    // --- Pesquisa de USUÁRIO (Sidebar) ---
     usuarioSearchTermInput.addEventListener('input', async () => {
         const searchTerm = usuarioSearchTermInput.value;
         if (searchTerm.length < 2) {
@@ -421,7 +528,7 @@
         }
     });
 
-    // --- Pesquisa de CLIENTE (NOVA) ---
+    // --- Pesquisa de CLIENTE (Sidebar) ---
     clienteSearchTermInput.addEventListener('input', async () => {
         const searchTerm = clienteSearchTermInput.value;
         if (searchTerm.length < 2) {
@@ -454,48 +561,29 @@
         }
     });
 
-    // --- Salvar Orçamento (ATUALIZADO) ---
-    const saveOrcamento = async () => {
+    // --- CREATE (Formulário da Sidebar) ---
+    // (A lógica interna permanece a mesma, pois já lê os IDs que
+    // são limpos ou preenchidos pelo toggle)
+    const saveOrcamento = async (e) => {
+        e.preventDefault();
         const usuarioId = document.getElementById('usuarioId').value;
         const clienteId = document.getElementById('clienteId').value;
 
-        if (!usuarioId) {
-            alert('Por favor, pesquise e selecione um usuário!');
+        if (!usuarioId && !clienteId) {
+            alert('Por favor, selecione um Usuário OU um Cliente para o orçamento!');
             return;
         }
-        if (!clienteId) {
-            alert('Por favor, pesquise e selecione um cliente!');
-            return;
-        }
-
-        // --- MODIFICADO: Tratamento do valor ---
-        // Pega o valor digitado (ex: "150,50")
         const valorInput = document.getElementById('valorOrcamento').value;
-
-        // Substitui a vírgula do formato BR por um ponto (ex: "150.50")
-        const valorNormalizado = valorInput.replace(',', '.');
-
-        // Converte para número. O parseFloat só entende o ponto.
-        const valorNumerico = parseFloat(valorNormalizado);
-
-        if (isNaN(valorNumerico)) {
-            alert('O valor do orçamento é inválido.');
-            return;
+        const valorNumerico = parseFloat(valorInput);
+        if (isNaN(valorNumerico) || valorNumerico <= 0) {
+            alert('O valor do orçamento é inválido.'); return;
         }
-        // --- Fim da Modificação ---
 
         const orcamentoData = {
             icmsEstados: document.getElementById('icmsEstados').value,
-
-            // Envia o número corrigido
             valorOrcamento: valorNumerico,
-
-            usuario: {
-                id: parseInt(usuarioId)
-            },
-            cliente: {
-                id: parseInt(clienteId)
-            }
+            usuario: usuarioId ? { id: parseInt(usuarioId) } : null,
+            cliente: clienteId ? { id: parseInt(clienteId) } : null
         };
 
         try {
@@ -506,34 +594,199 @@
             });
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(`Falha ao salvar o orçamento: ${errorText}`);
+                throw new Error(`Falha ao salvar: ${errorText}`);
             }
-
             clearForm();
             fetchAndRenderOrcamentos();
-            alert('Orçamento cadastrado com sucesso!');
+            alert('Orçamento CADASTRADO com sucesso!');
         } catch (error) {
             console.error('Erro ao salvar orçamento:', error);
             alert('Ocorreu um erro: ' + error.message);
         }
     };
 
-    // --- Deletar Orçamento (Existente) ---
+    // --- DELETE ---
     const deleteOrcamento = async (orcamentoId) => {
         if (confirm(`Tem certeza que deseja excluir o orçamento ID ${orcamentoId}?`)) {
             try {
-                await fetch(`${API_ORCAMENTOS_URL}/${orcamentoId}`, { method: 'DELETE' });
+                const response = await fetch(`${API_ORCAMENTOS_URL}/${orcamentoId}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) throw new Error('Falha ao excluir o orçamento.');
                 fetchAndRenderOrcamentos();
+                alert('Orçamento excluído com sucesso.');
             } catch (error) {
                 console.error('Erro ao excluir:', error);
+                alert(error.message);
             }
         }
     };
 
-    // Event Listeners
-    btnSalvar.addEventListener('click', saveOrcamento);
+    // --- Event Listeners Globais ---
+    orcamentoForm.addEventListener('submit', saveOrcamento);
     btnLimpar.addEventListener('click', clearForm);
-    document.addEventListener('DOMContentLoaded', fetchAndRenderOrcamentos);
+
+    orcamentoTableBody.addEventListener('click', async (e) => {
+        const button = e.target.closest('button[data-action]');
+        if (!button) return;
+        const id = button.dataset.id;
+        const action = button.dataset.action;
+
+        if (action === 'edit') {
+            try {
+                const response = await fetch(`${API_ORCAMENTOS_URL}/${id}`);
+                if (!response.ok) throw new Error('Orçamento não encontrado');
+                const orcamento = await response.json();
+                openEditModal(orcamento);
+            } catch (error) {
+                console.error('Erro ao buscar orçamento para edição:', error);
+                alert(error.message);
+            }
+        } else if (action === 'delete') {
+            deleteOrcamento(id);
+        }
+    });
+
+    // --- Listeners do Modal (UPDATE) ---
+    editOrcamentoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editOrcamentoId').value;
+        const usuarioId = document.getElementById('editUsuarioId').value;
+        const clienteId = document.getElementById('editClienteId').value;
+
+        if (!usuarioId && !clienteId) {
+            alert('Por favor, selecione um Usuário OU um Cliente para o orçamento!');
+            return;
+        }
+        const valorInput = document.getElementById('editValorOrcamento').value;
+        const valorNumerico = parseFloat(valorInput);
+        if (isNaN(valorNumerico) || valorNumerico <= 0) {
+            alert('O valor do orçamento é inválido.'); return;
+        }
+
+        const orcamentoData = {
+            id: parseInt(id),
+            icmsEstados: document.getElementById('editIcmsEstados').value,
+            valorOrcamento: valorNumerico,
+            usuario: usuarioId ? { id: parseInt(usuarioId) } : null,
+            cliente: clienteId ? { id: parseInt(clienteId) } : null
+        };
+
+        try {
+            const response = await fetch(API_ORCAMENTOS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orcamentoData),
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Falha ao atualizar: ${errorText}`);
+            }
+            closeEditModal();
+            fetchAndRenderOrcamentos();
+            alert('Orçamento ATUALIZADO com sucesso!');
+        } catch (error) {
+            console.error('Erro ao atualizar orçamento:', error);
+            alert('Ocorreu um erro: ' + error.message);
+        }
+    });
+
+    modalCloseBtn.addEventListener('click', closeEditModal);
+    btnCancelarEdit.addEventListener('click', closeEditModal);
+    editModalOverlay.addEventListener('click', (e) => {
+        if (e.target === editModalOverlay) {
+            closeEditModal();
+        }
+    });
+
+    // --- Listeners de Pesquisa (Modal) ---
+    editUsuarioSearchTermInput.addEventListener('input', async () => {
+        const searchTerm = editUsuarioSearchTermInput.value;
+        if (searchTerm.length < 2) { editUsuarioSearchResults.innerHTML = ''; return; }
+        try {
+            const response = await fetch(`${API_USUARIOS_URL}/pesquisa?nome=${encodeURIComponent(searchTerm)}`);
+            const usuarios = await response.json();
+            editUsuarioSearchResults.innerHTML = '';
+            if (usuarios.length > 0) {
+                usuarios.forEach(user => {
+                    const item = `<div class="result-item" data-id="${user.id}" data-name="${user.nomeUsuario}">${user.nomeUsuario} (CPF: ${user.cpf})</div>`;
+                    editUsuarioSearchResults.insertAdjacentHTML('beforeend', item);
+                });
+            } else {
+                editUsuarioSearchResults.innerHTML = '<div style="padding: 0.75rem 1rem;">Nenhum usuário encontrado.</div>';
+            }
+        } catch (error) { console.error('Erro ao pesquisar usuário (modal):', error); }
+    });
+
+    editUsuarioSearchResults.addEventListener('click', (e) => {
+        if (e.target.classList.contains('result-item')) {
+            editUsuarioSearchTermInput.value = e.target.dataset.name;
+            document.getElementById('editUsuarioId').value = e.target.dataset.id;
+            editSelectedUsuario.textContent = `Usuário Selecionado: ${e.target.dataset.name}`;
+            editUsuarioSearchResults.innerHTML = '';
+        }
+    });
+
+    editClienteSearchTermInput.addEventListener('input', async () => {
+        const searchTerm = editClienteSearchTermInput.value;
+        if (searchTerm.length < 2) { editClienteSearchResults.innerHTML = ''; return; }
+        try {
+            const response = await fetch(`${API_CLIENTES_URL}/pesquisa?termo=${encodeURIComponent(searchTerm)}`);
+            const clientes = await response.json();
+            editClienteSearchResults.innerHTML = '';
+            if (clientes.length > 0) {
+                clientes.forEach(cli => {
+                    const item = `<div class="result-item" data-id="${cli.id}" data-name="${cli.nome}">${cli.nome} (CPF: ${cli.cpf})</div>`;
+                    editClienteSearchResults.insertAdjacentHTML('beforeend', item);
+                });
+            } else {
+                editClienteSearchResults.innerHTML = '<div style="padding: 0.75rem 1rem;">Nenhum cliente encontrado.</div>';
+            }
+        } catch (error) { console.error('Erro ao pesquisar cliente (modal):', error); }
+    });
+
+    editClienteSearchResults.addEventListener('click', (e) => {
+        if (e.target.classList.contains('result-item')) {
+            editClienteSearchTermInput.value = e.target.dataset.name;
+            document.getElementById('editClienteId').value = e.target.dataset.id;
+            editSelectedCliente.textContent = `Cliente Selecionado: ${e.target.dataset.name}`;
+            editClienteSearchResults.innerHTML = '';
+        }
+    });
+
+
+    // --- Carregamento Inicial ---
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchAndRenderOrcamentos();
+
+        // --- NOVO: Listeners dos Selects de Toggle ---
+        tipoAutorSelect.addEventListener('input', () => {
+            toggleAutorFields(tipoAutorSelect, usuarioSearchWrapper, clienteSearchWrapper, 'usuarioId', 'clienteId');
+        });
+
+        editTipoAutorSelect.addEventListener('input', () => {
+            toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+        });
+
+        // --- NOVO: Inicializa o estado do formulário da sidebar ---
+        toggleAutorFields(tipoAutorSelect, usuarioSearchWrapper, clienteSearchWrapper, 'usuarioId', 'clienteId');
+
+        // --- NOVO: Inicializa o estado do formulário do modal ---
+        // (O toggle padrão é 'usuário', o que é bom para um modal limpo)
+        toggleAutorFields(editTipoAutorSelect, editUsuarioSearchWrapper, editClienteSearchWrapper, 'editUsuarioId', 'editClienteId');
+
+    });
+
+    // Fechar dropdowns de pesquisa ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#editOrcamentoForm .search-wrapper') && !e.target.closest('#orcamentoForm .search-wrapper')) {
+             usuarioSearchResults.innerHTML = '';
+             clienteSearchResults.innerHTML = '';
+             editUsuarioSearchResults.innerHTML = '';
+             editClienteSearchResults.innerHTML = '';
+        }
+    });
+
 </script>
 
 </body>

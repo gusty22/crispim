@@ -1,9 +1,9 @@
 package com.finan.orcamento.service;
 
-import com.finan.orcamento.model.ClienteModel; // IMPORTAR
+import com.finan.orcamento.model.ClienteModel;
 import com.finan.orcamento.model.OrcamentoModel;
 import com.finan.orcamento.model.UsuarioModel;
-import com.finan.orcamento.repositories.ClienteRepository; // IMPORTAR
+import com.finan.orcamento.repositories.ClienteRepository;
 import com.finan.orcamento.repositories.OrcamentoRepository;
 import com.finan.orcamento.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ public class OrcamentoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // INJEÇÃO ADICIONADA
     @Autowired
     private ClienteRepository clienteRepository;
 
@@ -33,53 +32,83 @@ public class OrcamentoService {
         if (obj.isPresent()) {
             return obj.get();
         } else {
-            throw new RuntimeException("Orçamento não encontrado");
+            throw new RuntimeException("Orçamento com ID " + id + " não encontrado");
         }
     }
 
-    // MÉTODO ATUALIZADO
-    public OrcamentoModel cadastrarOrcamento(OrcamentoModel orcamentoModel){
-        // 1. Valida e busca o Usuário
-        if (orcamentoModel.getUsuario() == null || orcamentoModel.getUsuario().getId() == null) {
-            throw new RuntimeException("Usuário não informado para o orçamento!");
+    // NOVO: Método privado para validar e preencher o orçamento
+    // Isso implementa a LÓGICA DE USUÁRIO/CLIENTE INDEPENDENTE
+    private OrcamentoModel validarEPreencherCampos(OrcamentoModel orcamento) {
+        boolean hasUsuario = orcamento.getUsuario() != null && orcamento.getUsuario().getId() != null;
+        boolean hasCliente = orcamento.getCliente() != null && orcamento.getCliente().getId() != null;
+
+        // 1. Validação: Deve ter pelo menos um
+        if (!hasUsuario && !hasCliente) {
+            throw new RuntimeException("Orçamento deve estar associado a, pelo menos, um Usuário ou um Cliente!");
         }
-        Long usuarioId = orcamentoModel.getUsuario().getId();
-        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário com ID " + usuarioId + " não encontrado!"));
-        orcamentoModel.setUsuario(usuario);
 
-        // 2. Valida e busca o Cliente
-        if (orcamentoModel.getCliente() == null || orcamentoModel.getCliente().getId() == null) {
-            throw new RuntimeException("Cliente não informado para o orçamento!");
+        // 2. Processa Usuário (se existir)
+        if (hasUsuario) {
+            Long usuarioId = orcamento.getUsuario().getId();
+            UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                    .orElseThrow(() -> new RuntimeException("Usuário com ID " + usuarioId + " não encontrado!"));
+            orcamento.setUsuario(usuario);
+        } else {
+            orcamento.setUsuario(null); // Garante que está nulo se não for enviado
         }
-        Long clienteId = orcamentoModel.getCliente().getId();
-        ClienteModel cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente com ID " + clienteId + " não encontrado!"));
-        orcamentoModel.setCliente(cliente);
 
-        // 3. Calcula ICMS
-        orcamentoModel.calcularIcms();
+        // 3. Processa Cliente (se existir)
+        if (hasCliente) {
+            Long clienteId = orcamento.getCliente().getId();
+            ClienteModel cliente = clienteRepository.findById(clienteId)
+                    .orElseThrow(() -> new RuntimeException("Cliente com ID " + clienteId + " não encontrado!"));
+            orcamento.setCliente(cliente);
+        } else {
+            orcamento.setCliente(null); // Garante que está nulo se não for enviado
+        }
 
-        // 4. Salva o orçamento completo
-        return orcamentoRepository.save(orcamentoModel);
+        // 4. Calcula ICMS
+        orcamento.calcularIcms();
+
+        return orcamento;
     }
 
-    // ... (demais métodos) ...
-    public OrcamentoModel atualizaCadastro(OrcamentoModel orcamentoModel, Long id){
-        OrcamentoModel newOrcamentoModel = buscaId(id);
+    // NOVO: Método unificado para Salvar ou Atualizar
+    public OrcamentoModel salvarOuAtualizar(OrcamentoModel orcamentoModel) {
 
-        newOrcamentoModel.setValorOrcamento(orcamentoModel.getValorOrcamento());
-        newOrcamentoModel.setIcmsEstados(orcamentoModel.getIcmsEstados());
+        // 1. Valida e preenche os campos (Usuário, Cliente, ICMS)
+        // Esta função agora contém a lógica principal da sua regra de negócio
+        OrcamentoModel orcamentoValidado = validarEPreencherCampos(orcamentoModel);
 
-        // Recalcula o ICMS
-        newOrcamentoModel.calcularIcms();
+        // 2. Verifica se é Crate ou Update
+        if (orcamentoModel.getId() != null) {
+            // É uma ATUALIZAÇÃO
+            // Busca o existente para não perder dados não enviados (ex: data de criação, etc)
+            OrcamentoModel orcamentoExistente = buscaId(orcamentoModel.getId());
 
-        // Aqui você poderia adicionar a lógica para atualizar o cliente/usuário se necessário
+            // Atualiza os campos do existente com os dados validados
+            orcamentoExistente.setIcmsEstados(orcamentoValidado.getIcmsEstados());
+            orcamentoExistente.setValorOrcamento(orcamentoValidado.getValorOrcamento());
+            orcamentoExistente.setValorICMS(orcamentoValidado.getValorICMS()); // Valor calculado
+            orcamentoExistente.setUsuario(orcamentoValidado.getUsuario()); // Pode ser nulo
+            orcamentoExistente.setCliente(orcamentoValidado.getCliente()); // Pode ser nulo
 
-        return orcamentoRepository.save(newOrcamentoModel);
+            return orcamentoRepository.save(orcamentoExistente);
+        } else {
+            // É um CADASTRO (novo)
+            // O orcamentoValidado já está pronto para ser salvo
+            return orcamentoRepository.save(orcamentoValidado);
+        }
     }
+
+    // Os métodos 'cadastrarOrcamento' e 'atualizaCadastro' foram substituídos
+    // pela lógica unificada em 'salvarOuAtualizar'
 
     public void deletaOrcamento(Long id){
+        // Verifica se existe antes de deletar
+        if (!orcamentoRepository.existsById(id)) {
+            throw new RuntimeException("Orçamento com ID " + id + " não encontrado, não é possível deletar.");
+        }
         orcamentoRepository.deleteById(id);
     }
 }

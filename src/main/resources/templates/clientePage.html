@@ -177,24 +177,12 @@
         color: var(--cor-texto-secundario);
         background-color: var(--cor-fundo);
     }
-    tbody tr {
-        transition: background-color 0.2s ease-in-out;
-    }
-    tbody tr:hover {
-        background-color: #fcfcfd;
-    }
-    tbody td {
-        font-size: 0.95rem;
-        color: var(--cor-texto-primario);
-    }
-    tbody td button { /* Botões na tabela menores */
-        padding: 0.4rem 0.8rem;
-        font-size: 0.85rem;
-    }
-    tbody td button svg {
-        width: 14px;
-        height: 14px;
-    }
+    tbody tr:hover { background-color: #fcfcfd; }
+    tbody td { font-size: 0.95rem; color: var(--cor-texto-primario); }
+    tbody td button { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    tbody td button svg { width: 14px; height: 14px; }
+    .action-buttons { display: flex; gap: 0.5rem; }
+
 
     /* 8. Componentes Específicos de Pesquisa */
     .search-results {
@@ -226,6 +214,65 @@
         font-size: 0.9rem;
     }
 
+    /* --- INÍCIO: NOVOS Estilos do Modal --- */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(33, 37, 41, 0.5);
+        display: none; /* Escondido por padrão */
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+    .modal-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+    .modal-content {
+        background-color: var(--cor-superficie);
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: var(--sombra-card);
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        z-index: 1001;
+        transform: scale(0.95);
+        transition: transform 0.2s ease-in-out;
+    }
+    .modal-overlay.active .modal-content {
+        transform: scale(1);
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        color: var(--cor-texto-primario);
+        border-bottom: 1px solid var(--cor-borda);
+        padding-bottom: 1rem;
+    }
+    .modal-close {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: var(--cor-texto-secundario);
+        cursor: pointer;
+        line-height: 1;
+        border: none;
+        background: transparent;
+        padding: 0;
+    }
+    .modal-close:hover { color: var(--cor-texto-primario); }
+    /* --- FIM: NOVOS Estilos do Modal --- */
+
+
     /* 9. Responsividade */
     @media (max-width: 1024px) {
         .main-grid {
@@ -234,21 +281,11 @@
     }
 
     @media (max-width: 768px) {
-        body {
-            font-size: 14px; /* Reduz a fonte base em mobile */
-        }
-        .navbar {
-            padding: 1rem;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .container {
-            margin: 1.5rem auto;
-            padding: 0 1rem;
-        }
-        .card {
-            padding: 1.5rem;
-        }
+        body { font-size: 14px; }
+        .navbar { padding: 1rem; flex-direction: column; gap: 1rem; }
+        .container { margin: 1.5rem auto; padding: 0 1rem; }
+        .card { padding: 1.5rem; }
+        .modal-content { padding: 1.5rem; }
     }
   </style>
 </head>
@@ -300,199 +337,305 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="editModalOverlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="card-title" style="margin-bottom: 0; border: none; padding: 0;">Editar Cliente</h2>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+
+    <form id="editClienteForm" style="margin-top: 1.5rem;">
+      <input type="hidden" id="editId">
+
+      <label for="editNome">Nome do Cliente</label>
+      <input type="text" id="editNome" required placeholder="Nome completo">
+
+      <label for="editCpf">CPF</label>
+      <input type="text" id="editCpf" required placeholder="000.000.000-00">
+
+      <div class="form-actions">
+        <button id="salvarEditCliente" type="submit" class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19,9H5a1,1,0,0,0-1,1V19a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V10A1,1,0,0,0,19,9ZM7,17a1,1,0,1,1,1-1A1,1,0,0,1,7,17ZM17,7H7V4H17Z"/></svg>
+          Atualizar
+        </button>
+        <button id="btnCancelarEdit" type="button" class="btn-secondary">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
 <script>
-    const API_URL = '/api/clientes';
+  const API_URL = '/api/clientes';
 
-    const clienteTableBody = document.getElementById('clienteTableBody');
-    const clienteForm = document.getElementById('clienteForm');
-    const btnLimpar = document.getElementById('btnLimpar');
+  // Forms
+  const clienteTableBody = document.getElementById('clienteTableBody');
+  const clienteForm = document.getElementById('clienteForm'); // Sidebar
+  const btnLimpar = document.getElementById('btnLimpar');
 
-    // Variável para guardar todos os clientes para o autocomplete
-    let allClientes = [];
+  // NOVO: Modal Elements
+  const editModalOverlay = document.getElementById('editModalOverlay');
+  const editClienteForm = document.getElementById('editClienteForm'); // Modal
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const btnCancelarEdit = document.getElementById('btnCancelarEdit');
 
-    // Função para formatar CPF
-    const formatarCPF = (cpf) => {
-        if (!cpf) return ''; // Adicionado para evitar erro se o CPF for nulo/undefined
-        let v = cpf.replace(/\D/g, '');
-        v = v.substring(0, 11);
-        v = v.replace(/(\d{3})(\d)/, '$1.$2');
-        v = v.replace(/(\d{3})(\d)/, '$1.$2');
-        v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-        return v;
-    };
+  let allClientes = [];
 
-    // Função para remover a lista de sugestões
-    const removerSugestoes = () => {
-        const oldSuggestions = document.getElementById('autocomplete-results');
-        if (oldSuggestions) {
-            oldSuggestions.remove();
-        }
-    };
+  // --- Funções de Máscara ---
+  const formatarCPF = (cpf) => {
+      if (!cpf) return '';
+      let v = cpf.replace(/\D/g, '');
+      v = v.substring(0, 11);
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      return v;
+  };
 
-    const fetchAndRenderTable = async () => {
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Falha ao buscar clientes');
+  const removerSugestoes = () => {
+      const oldSuggestions = document.getElementById('autocomplete-results');
+      if (oldSuggestions) {
+          oldSuggestions.remove();
+      }
+  };
+  // --- FIM Funções de Máscara ---
 
-            allClientes = await response.json();
-            clienteTableBody.innerHTML = '';
+  // --- READ (ALL) ---
+  const fetchAndRenderTable = async () => {
+      try {
+          const response = await fetch(API_URL);
+          if (!response.ok) throw new Error('Falha ao buscar clientes');
 
-            allClientes.forEach(cliente => {
-                const row = `
-                  <tr>
-                      <td>${cliente.id}</td>
-                      <td>${cliente.nome}</td>
-                      <td>${formatarCPF(cliente.cpf)}</td>
-                      <td>
-                          <button class="btn-info" onclick="editCliente(${cliente.id})">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z"/></svg>
-                          </button>
-                          <button class="btn-danger" onclick="deleteCliente(${cliente.id})">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16,9V4H8V9H2V11H4V21a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V11h2V9ZM10,18H8V13h2Zm4,0H12V13h2Zm4-7H6V6H18Z"/></svg>
-                          </button>
-                      </td>
-                  </tr>
-              `;
-                clienteTableBody.insertAdjacentHTML('beforeend', row);
-            });
-        } catch (error) {
-            console.error('Erro ao carregar a tabela de clientes:', error);
-        }
-    };
+          allClientes = await response.json();
+          clienteTableBody.innerHTML = '';
 
-    // Esta função preenche o formulário todo
-    const populateForm = (cliente) => {
-        document.getElementById('id').value = cliente.id;
-        document.getElementById('nome').value = cliente.nome;
-        document.getElementById('cpf').value = formatarCPF(cliente.cpf);
-    };
+          allClientes.forEach(cliente => {
+              // ALTERADO: Botões com data-action, sem onclick
+              const row = `
+                <tr>
+                    <td>${cliente.id}</td>
+                    <td>${cliente.nome}</td>
+                    <td>${formatarCPF(cliente.cpf)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-info" data-action="edit" data-id="${cliente.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z"/></svg>
+                            </button>
+                            <button class="btn-danger" data-action="delete" data-id="${cliente.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16,9V4H8V9H2V11H4V21a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V11h2V9ZM10,18H8V13h2Zm4,0H12V13h2Zm4-7H6V6H18Z"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+              clienteTableBody.insertAdjacentHTML('beforeend', row);
+          });
+      } catch (error) {
+          console.error('Erro ao carregar a tabela de clientes:', error);
+      }
+  };
 
-    const clearForm = () => {
-        clienteForm.reset();
-        document.getElementById('id').value = '';
-        removerSugestoes();
-    };
+  // --- NOVO: Funções do Modal ---
+  const openEditModal = (cliente) => {
+      // Preenche o formulário do *modal*
+      document.getElementById('editId').value = cliente.id;
+      document.getElementById('editNome').value = cliente.nome;
+      document.getElementById('editCpf').value = formatarCPF(cliente.cpf);
+      editModalOverlay.classList.add('active');
+  };
 
-    const editCliente = async (id) => {
-        try {
-            const response = await fetch(`${API_URL}/${id}`);
-            if (response.ok) {
-                const cliente = await response.json();
-                populateForm(cliente);
-                window.scrollTo(0, 0);
-            } else {
-                alert('Cliente não encontrado.');
-            }
-        } catch (error) {
-            console.error('Erro ao buscar cliente para edição:', error);
-        }
-    };
+  const closeEditModal = () => {
+      editModalOverlay.classList.remove('active');
+      editClienteForm.reset();
+  };
 
-    const deleteCliente = async (id) => {
-        if (confirm('Tem certeza que deseja excluir este cliente?')) {
-            try {
-                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-                if (response.ok) {
-                    fetchAndRenderTable();
-                } else {
-                    alert('Erro ao excluir cliente.');
-                }
-            } catch (error) {
-                console.error('Erro ao excluir:', error);
-            }
-        }
-    };
+  // Esta função (populateForm) agora serve APENAS ao autocomplete
+  const populateForm = (cliente) => {
+      document.getElementById('id').value = cliente.id;
+      document.getElementById('nome').value = cliente.nome;
+      document.getElementById('cpf').value = formatarCPF(cliente.cpf);
+  };
 
-    clienteForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('id').value;
-        const clienteData = {
-            nome: document.getElementById('nome').value,
-            cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
-        };
-        if (id) {
-            clienteData.id = id;
-        }
+  const clearForm = () => {
+      clienteForm.reset();
+      document.getElementById('id').value = ''; // Limpa o ID da sidebar
+      removerSugestoes();
+  };
 
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clienteData),
-            });
+  // --- NOVO: Event Listener da Tabela (Ações) ---
+  clienteTableBody.addEventListener('click', async (e) => {
+      const button = e.target.closest('button[data-id]');
+      if (!button) return;
+      const clienteId = button.dataset.id;
+      const action = button.dataset.action;
 
-            clearForm();
-            fetchAndRenderTable();
-            alert(id ? 'Cliente atualizado com sucesso!' : 'Cliente cadastrado com sucesso!');
-        } catch (error) {
-            console.error('Erro ao salvar cliente:', error);
-            alert('Ocorreu um erro ao salvar o cliente.');
-        }
-    });
+      if (action === 'edit') {
+          // --- Lógica de Edição (READ ONE) ---
+          try {
+              const response = await fetch(`${API_URL}/${clienteId}`);
+              if (response.ok) {
+                  const cliente = await response.json();
+                  openEditModal(cliente); // Abre o modal
+              } else {
+                  alert('Cliente não encontrado.');
+              }
+          } catch (error) {
+              console.error('Erro ao buscar cliente para edição:', error);
+          }
+      } else if (action === 'delete') {
+          // --- Lógica de Exclusão (DELETE) ---
+          if (!confirm('Tem certeza que deseja excluir este cliente?')) return;
+          try {
+              const response = await fetch(`${API_URL}/${clienteId}`, { method: 'DELETE' });
+              if (response.ok) {
+                  alert('Cliente excluído com sucesso!');
+                  fetchAndRenderTable();
+                  if (document.getElementById('id').value === clienteId) {
+                      clearForm(); // Limpa sidebar se o cliente excluído estava nela
+                  }
+              } else {
+                  alert('Erro ao excluir cliente.');
+              }
+          } catch (error) {
+              console.error('Erro ao excluir:', error);
+          }
+      }
+  });
 
-    btnLimpar.addEventListener('click', clearForm);
+  // --- CREATE / UPDATE (Formulário da Sidebar) ---
+  // Esta lógica permanece a mesma do código original
+  clienteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('id').value; // Pega o ID (se houver)
+      const clienteData = {
+          nome: document.getElementById('nome').value,
+          cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+      };
+      if (id) {
+          clienteData.id = id; // Adiciona ID para Update
+      }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchAndRenderTable();
+      try {
+          await fetch(API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(clienteData),
+          });
 
-        // --- INÍCIO: Solução Problema 1 (Máscara CPF) ---
-        const inputCpf = document.getElementById('cpf');
-        inputCpf.addEventListener('input', (e) => {
-            e.target.value = formatarCPF(e.target.value);
-        });
-        // --- FIM: Solução Problema 1 ---
+          clearForm();
+          fetchAndRenderTable();
+          alert(id ? 'Cliente atualizado com sucesso!' : 'Cliente cadastrado com sucesso!');
+      } catch (error) {
+          console.error('Erro ao salvar cliente:', error);
+          alert('Ocorreu um erro ao salvar o cliente.');
+      }
+  });
+
+  // --- NOVO: UPDATE (Formulário do Modal) ---
+  editClienteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Pega dados do form do MODAL
+      const clienteData = {
+          id: document.getElementById('editId').value, // ID é obrigatório aqui
+          nome: document.getElementById('editNome').value,
+          cpf: document.getElementById('editCpf').value.replace(/\D/g, ''),
+      };
+
+      try {
+          const response = await fetch(API_URL, {
+              method: 'POST', // ou 'PUT', dependendo da sua API
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(clienteData),
+          });
+          if (!response.ok) throw new Error('Falha ao atualizar cliente');
+
+          closeEditModal();
+          fetchAndRenderTable();
+          alert('Cliente ATUALIZADO com sucesso!');
+
+          // Limpa o form da sidebar se o cliente editado estava lá
+          if (document.getElementById('id').value === clienteData.id) {
+              clearForm();
+          }
+      } catch (error) {
+          console.error('Erro ao atualizar cliente:', error);
+          alert(error.message);
+      }
+  });
 
 
-        // --- INÍCIO: Solução Problema 2 (Autocomplete) ---
-        const inputNome = document.getElementById('nome');
+  // --- Outros Event Listeners ---
+  btnLimpar.addEventListener('click', clearForm);
 
-        inputNome.addEventListener('input', () => {
-            const query = inputNome.value.toLowerCase();
-            removerSugestoes();
+  // NOVO: Listeners para fechar o modal
+  modalCloseBtn.addEventListener('click', closeEditModal);
+  btnCancelarEdit.addEventListener('click', closeEditModal);
+  editModalOverlay.addEventListener('click', (e) => {
+      // Fecha somente se clicar no fundo (overlay)
+      if (e.target === editModalOverlay) {
+          closeEditModal();
+      }
+  });
 
-            if (query.length < 1) return;
 
-            const sugestoes = allClientes.filter(cliente =>
-                cliente.nome.toLowerCase().includes(query)
-            ).slice(0, 5);
+  // --- DOMContentLoaded ---
+  document.addEventListener('DOMContentLoaded', () => {
+      fetchAndRenderTable();
 
-            if (sugestoes.length > 0) {
-                const suggestionsContainer = document.createElement('div');
-                suggestionsContainer.className = 'search-results';
-                suggestionsContainer.id = 'autocomplete-results';
+      //(Máscara CPF - Sidebar)
+      const inputCpf = document.getElementById('cpf');
+      inputCpf.addEventListener('input', (e) => {
+          e.target.value = formatarCPF(e.target.value);
+      });
 
-                sugestoes.forEach(cliente => {
-                    const item = document.createElement('div');
-                    item.className = 'result-item';
-                    item.textContent = cliente.nome;
+      // NOVO: (Máscara CPF - Modal)
+      const editInputCpf = document.getElementById('editCpf');
+      editInputCpf.addEventListener('input', (e) => {
+          e.target.value = formatarCPF(e.target.value);
+      });
 
-                    // vvvvvvvvvvvvvvvv AQUI ESTÁ A CORREÇÃO vvvvvvvvvvvvvvvv
-                    item.addEventListener('click', () => {
-                        // **MODIFICADO:**
-                        // Em vez de preencher só o nome (inputNome.value = cliente.nome),
-                        // chamamos a função populateForm para preencher o formulário inteiro.
-                        populateForm(cliente);
 
-                        // E a lista de sugestões desaparece
-                        removerSugestoes();
-                    });
-                    // ^^^^^^^^^^^^^^^^ AQUI ESTÁ A CORREÇÃO ^^^^^^^^^^^^^^^^
+      //(Autocomplete - Sidebar)
+      const inputNome = document.getElementById('nome');
+      inputNome.addEventListener('input', () => {
+          const query = inputNome.value.toLowerCase();
+          removerSugestoes();
 
-                    suggestionsContainer.appendChild(item);
-                });
+          if (query.length < 1) return;
 
-                inputNome.parentNode.insertBefore(suggestionsContainer, inputNome.nextSibling);
-            }
-        });
+          const sugestoes = allClientes.filter(cliente =>
+              cliente.nome.toLowerCase().includes(query)
+          ).slice(0, 5);
 
-        // Opcional: Fechar sugestões se o usuário clicar fora do campo
-        document.addEventListener('click', (e) => {
-            if (e.target.id !== 'nome') {
-                removerSugestoes();
-            }
-        });
-        // --- FIM: Solução Problema 2 ---
-    });
+          if (sugestoes.length > 0) {
+              const suggestionsContainer = document.createElement('div');
+              suggestionsContainer.className = 'search-results';
+              suggestionsContainer.id = 'autocomplete-results';
+
+              sugestoes.forEach(cliente => {
+                  const item = document.createElement('div');
+                  item.className = 'result-item';
+                  item.textContent = cliente.nome;
+
+                  // CORREÇÃO DE BUG: Adicionado populateForm aqui
+                  item.addEventListener('click', () => {
+                      populateForm(cliente); // Preenche a sidebar
+                      removerSugestoes();
+                  });
+
+                  suggestionsContainer.appendChild(item);
+              });
+
+              inputNome.parentNode.insertBefore(suggestionsContainer, inputNome.nextSibling);
+          }
+      });
+
+      //Fechar sugestões se o usuário clicar fora do campo
+      document.addEventListener('click', (e) => {
+          if (e.target.id !== 'nome') {
+              removerSugestoes();
+          }
+      });
+  });
 </script>
 
 </body>
